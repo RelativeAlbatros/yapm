@@ -1,5 +1,4 @@
 PREFIX = /usr/local
-CC ?= gcc
 
 yapm: src/main.c
 	${CC} $? -o bin/$@

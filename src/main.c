@@ -13,6 +13,7 @@ static void create_directory_tree(char *, char*);
 static void create_makefile(char *, char*);
 static void create_main(char *, char *);
 static void create_readme(char *);
+static void init_git(char *);
 
 void die(char *message){
     fprintf(stderr, "[!!] %s\n", message);
@@ -73,7 +74,7 @@ void create_main(char *project, char *type){
         sprintf(buffer, "#include <stdio.h> \n"
                         " \n"
                         "int main(int argc, char **argv) { \n"
-                        "	printf(\"Hello, world! \n\");\n"
+                        "	printf(\"Hello, world!\"); \n"
                         "	return 0; \n"
                         "} \n");
     }
@@ -81,8 +82,7 @@ void create_main(char *project, char *type){
     fclose(main);
 }
 
-void
-create_readme(char *project){
+void create_readme(char *project){
     char buffer[256];
     sprintf(buffer, "%s/README", project);
     FILE *readme = fopen(buffer, "w");
@@ -90,6 +90,16 @@ create_readme(char *project){
     sprintf(buffer, "${EDITOR} %s/README", project);
     system(buffer);
     fclose(readme);
+}
+
+void init_git(char *project){
+    chdir(project);
+    if (fork() == 0) {
+        // TODO: fix git init
+        if (execlp("git", "init", NULL) == -1)
+            perror("initializing git");
+    }
+    chdir("..");
 }
 
 int main(int argc, char **argv) {
@@ -105,6 +115,7 @@ int main(int argc, char **argv) {
     create_makefile(project, type);
     create_main(project, type);
     create_readme(project);
+    // init_git(project);
 
     return 0;
 }
