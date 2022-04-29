@@ -77,7 +77,7 @@ void create_main(char *project, char *type){
                         "	printf(\"Hello, world!\"); \n"
                         "	return 0; \n"
                         "} \n");
-    } else if (strcmp(buffer, "cpp") == 0 ) {
+    } else if (strcmp(type, "cpp") == 0 ) {
         sprintf(buffer, "#include <iostream> \n"
                         " \n"
                         "int main(int argc, char *argv[]) { \n"
