@@ -58,14 +58,14 @@ void create_makefile(char *project, char *extension, char *compiler){
         die("creating makefile.");
     sprintf(buffer, "PREFIX := /usr/local\n"
 		    "\n"
-		    "%s: src/main.%s\n"
+		    "%s: src/main.%s \n"
 		    "	%s -o bin/$@ $?\n"
 		    "\n"
-		    "install: %s\n"
+		    "install: %s \n"
 		    "	mv bin/%s ${PREFIX}/bin/ \n"
 		    "\n"
-		    "clean:\n"
-		    "	rm -f bin/%s\n", project, extension, compiler, project, project, project);
+		    "clean: \n"
+		    "	rm -f bin/%s \n", project, extension, compiler, project, project, project);
     fprintf(makefile, "%s", buffer);
     fclose(makefile);
 }
@@ -80,7 +80,7 @@ void create_main(char *project, char *extension){
         sprintf(buffer, "#include <stdio.h> \n"
                         " \n"
                         "int main(int argc, char **argv) { \n"
-                        "	printf(\"Hello, world!\"); \n"
+                        "	printf(\"Hello, world!\n\"); \n"
                         "	return 0; \n"
                         "} \n");
     } else if (strcmp(extension, "cpp") == 0 ) {
