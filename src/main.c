@@ -123,22 +123,22 @@ int main(int argc, char **argv) {
     strncpy(project, argv[1], 80);
     strncpy(extension, "c", 8);
     strcpy(compiler, "gcc");
-    while ((opt = getopt(argc, argv, ":hvt:c:")) != -1) {
+    while ((opt = getopt(argc, argv, ":hve:c:")) != -1) {
         switch (opt) {
         case 'h':
             usage();
             break;
         case 'v':
-            die("yapm v%s", version);
+            die("yapm v%s \n", version);
             break;
-        case 't':
+        case 'e':
             strncpy(extension, optarg, 8);
             break;
         case 'c':
             strncpy(compiler, optarg, 16);
             break;
         default:
-            die("unknown option: %s", opt);
+            die("unknown option: %s \n", opt);
         }
     }
 
