@@ -1,6 +1,10 @@
 yapm - yet another project manager
 ==================================
 
+run
+---
+    make && ./bin/yapm
+    
 Installation
 ------------
 edit Makefile to match your current setup
