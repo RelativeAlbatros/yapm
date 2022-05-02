@@ -7,12 +7,20 @@
 #include <stdarg.h>
 #include <sys/stat.h>
 
-static char *version = "1.0.0";
+static char *version = "1.1.0";
+static char *license_content = "Copyright <YEAR> <COPYRIGHT HOLDER> \n\n"
+
+"Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the \"Software\"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions: \n\n"
+
+"The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.\n\n"
+
+"THE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.";
 
 static void die(char *message, ...);
 static void debug(char *message);
 static void usage(void);
-static void create_directory_tree(char *, char*);
+static void create_license(char *message);
+static void create_directory_tree(char *project, char *extension);
 static void create_makefile(char *project, char *extension, char *compiler);
 static void create_main(char *project, char *extension);
 static void create_readme(char *project);
@@ -33,6 +41,16 @@ void debug(char *message){
 void usage(void){
     printf("USAGE: yapm <name> -e <extension> -c <compiler>\n");
     exit(1);
+}
+
+void create_license(char *project) {
+    char buffer[16];
+    sprintf(buffer, "%s/LICENSE", project);
+    FILE *license = fopen(buffer, "w");
+    if (license == NULL)
+        die("creating license.");
+    fputs(license_content, license);
+    fclose(license);
 }
 
 void create_directory_tree(char *project, char *extension){
@@ -59,11 +77,14 @@ void create_makefile(char *project, char *extension, char *compiler){
 		    "%s: src/main.%s \n"
 		    "	%s -o bin/$@ $?\n"
 		    "\n"
+            "run: %s \n"
+            "   ./bin/%s \n"
+            "\n"
 		    "install: %s \n"
 		    "	mv bin/%s ${PREFIX}/bin/ \n"
 		    "\n"
 		    "clean: \n"
-		    "	rm -f bin/%s \n", project, extension, compiler, project, project, project);
+		    "	rm -f bin/%s \n", project, extension, compiler, project, project, project, project, project);
     fprintf(makefile, "%s", buffer);
     fclose(makefile);
 }
@@ -88,6 +109,8 @@ void create_main(char *project, char *extension){
                         "	std::cout << \"Hello, World!\" << std::endl; \n"
                         "	return 0; \n"
                         "} \n");
+    } else if (strcmp(extension, "python") == 0) {
+        sprintf(buffer, " print(\"Hello, World!\") ");
     }
     fprintf(main, "%s", buffer);
     fclose(main);
