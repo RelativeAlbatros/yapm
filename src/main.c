@@ -43,8 +43,6 @@ void create_directory_tree(char *project, char *extension){
     mkdir(buffer, DIR_PERM);
     sprintf(buffer, "%s/bin", project);
     mkdir(buffer, DIR_PERM);
-    sprintf(buffer, "%s/lib", project);
-    mkdir(buffer, DIR_PERM);
     sprintf(buffer, "%s/include", project);
     mkdir(buffer, DIR_PERM);
     memset(buffer, 0, sizeof(buffer));
