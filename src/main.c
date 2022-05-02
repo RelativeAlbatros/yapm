@@ -167,6 +167,7 @@ int main(int argc, char **argv) {
     create_makefile(project, extension, compiler);
     create_main(project, extension);
     create_readme(project);
+    create_license(project);
     // init_git(project);
 
     return 0;
