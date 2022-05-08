@@ -75,16 +75,16 @@ void create_makefile(char *project, char *extension, char *compiler){
     sprintf(buffer, "PREFIX := /usr/local\n"
 		    "\n"
 		    "%s: src/main.%s \n"
-		    "	%s -o bin/$@ $?\n"
+		    "\t%s -o bin/$@ $?\n"
 		    "\n"
             "run: %s \n"
-            "   ./bin/%s \n"
+            "\t./bin/%s \n"
             "\n"
 		    "install: %s \n"
-		    "	mv bin/%s ${PREFIX}/bin/ \n"
+		    "\tmv bin/%s ${PREFIX}/bin/ \n"
 		    "\n"
 		    "clean: \n"
-		    "	rm -f bin/%s \n", project, extension, compiler, project, project, project, project, project);
+		    "\trm -f bin/%s \n", project, extension, compiler, project, project, project, project, project);
     fprintf(makefile, "%s", buffer);
     fclose(makefile);
 }
