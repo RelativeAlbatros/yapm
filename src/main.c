@@ -72,19 +72,24 @@ void create_makefile(char *project, char *extension, char *compiler){
     FILE *makefile = fopen(buffer, "w");
     if (makefile == NULL)
         die("creating makefile.");
-    sprintf(buffer, "PREFIX := /usr/local\n"
+    sprintf(buffer, "PREFIX := /usr/local \n"
+                    "SRC    := src/main.%s \n"
 		    "\n"
-		    "%s: src/main.%s \n"
-		    "\t%s -o bin/$@ $?\n"
+		    "%s: ${SRC} \n"
+		    "\t%s -o bin/$@ $? \n"
 		    "\n"
-            "run: %s \n"
-            "\t./bin/%s \n"
-            "\n"
+                    "run: %s \n"
+                    "\t./bin/%s \n"
+                    "\n"
 		    "install: %s \n"
 		    "\tmv bin/%s ${PREFIX}/bin/ \n"
 		    "\n"
 		    "clean: \n"
-		    "\trm -f bin/%s \n", project, extension, compiler, project, project, project, project, project);
+		    "\trm -f bin/%s \n"
+                    "\n"
+                    "debug: \n"
+                    "\ttime { %s -g $? -o bin/$@; } \n",
+                    extension, project, compiler, project, project, project, project, project, compiler);
     fprintf(makefile, "%s", buffer);
     fclose(makefile);
 }
