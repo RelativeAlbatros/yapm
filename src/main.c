@@ -59,7 +59,7 @@ void create_license(char *project) {
 void create_directory_tree(char *project, char *extension){
     char buffer[256];
     if (mkdir(project, DIR_PERM) != 0)
-        die("creating directory.");
+        die("creating directory.\n");
     sprintf(buffer, "%s/src", project);
     mkdir(buffer, DIR_PERM);
     sprintf(buffer, "%s/bin", project);
@@ -165,6 +165,10 @@ int main(int argc, char **argv) {
     strncpy(extension, argv[2], 8);
     if (strcmp(extension, "c") == 0)
         strcpy(compiler, "gcc");
+    else if (strcmp(extension, "c++") == 0) {
+        strcpy(extension, "cpp");
+        strcpy(compiler, "g++");
+    }
     else if (strcmp(extension, "cpp") == 0)
         strcpy(compiler, "g++");
     else if (strcmp(extension, "python") == 0)
