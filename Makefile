@@ -1,6 +1,7 @@
-PREFIX = /usr/local
+PREFIX := /usr/local
+SRC    := src/main.c
 
-yapm: src/main.c
+yapm: ${SRC}
 	${CC} $? -o bin/$@
 
 install: yapm
@@ -11,3 +12,6 @@ uninstall: clean
 
 clean:
 	rm -f bin/yapm
+
+debug: ${SRC}
+	@time { ${CC} $? -g -o bin/$@; echo; }

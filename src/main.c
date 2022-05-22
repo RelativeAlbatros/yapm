@@ -91,7 +91,7 @@ void create_makefile(char *project, char *extension, char *compiler){
                     "\trm -f bin/%s \n"
                     "\n"
                     "debug: ${SRC}\n"
-                    "\ttime { %s -g $? -o bin/$@; } \n",
+                    "\t@time { %s -g $? -o bin/$@; } \n",
                     extension, project, compiler, project, project, project, project, project, compiler);
     fprintf(makefile, "%s", buffer);
     fclose(makefile);
