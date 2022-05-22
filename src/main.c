@@ -1,4 +1,4 @@
-#define DIR_PERM 0711 // default directory permission
+#define DIR_PERM 0755 // default directory permission
 
 #include <stdio.h>
 #include <unistd.h>
@@ -7,7 +7,7 @@
 #include <stdarg.h>
 #include <sys/stat.h>
 
-static char *version = "1.1.0";
+static char *version = "1.20";
 static char *license_content = "Copyright <YEAR> <COPYRIGHT HOLDER> \n\n"
 
 "Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the \"Software\"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions: \n\n"
@@ -39,7 +39,10 @@ void debug(char *message){
 }
 
 void usage(void){
-    printf("USAGE: yapm <name> -e <extension> -c <compiler>\n");
+    printf("USAGE: yapm <name> <file-extension> [-c compiler]\n"
+           "    -v      prints version \n"
+           "    -h      shows this helpful message \n"
+           "    -c      manually set a compiler \n");
     exit(1);
 }
 
@@ -74,20 +77,20 @@ void create_makefile(char *project, char *extension, char *compiler){
         die("creating makefile.");
     sprintf(buffer, "PREFIX := /usr/local \n"
                     "SRC    := src/main.%s \n"
-		    "\n"
-		    "%s: ${SRC} \n"
-		    "\t%s -o bin/$@ $? \n"
-		    "\n"
+                    "\n"
+                    "%s: ${SRC} \n"
+                    "\t%s -o bin/$@ $? \n"
+                    "\n"
                     "run: %s \n"
                     "\t./bin/%s \n"
                     "\n"
-		    "install: %s \n"
-		    "\tmv bin/%s ${PREFIX}/bin/ \n"
-		    "\n"
-		    "clean: \n"
-		    "\trm -f bin/%s \n"
+                    "install: %s \n"
+                    "\tmv bin/%s ${PREFIX}/bin/ \n"
                     "\n"
-                    "debug: \n"
+                    "clean: \n"
+                    "\trm -f bin/%s \n"
+                    "\n"
+                    "debug: ${SRC}\n"
                     "\ttime { %s -g $? -o bin/$@; } \n",
                     extension, project, compiler, project, project, project, project, project, compiler);
     fprintf(makefile, "%s", buffer);
@@ -104,7 +107,7 @@ void create_main(char *project, char *extension){
         sprintf(buffer, "#include <stdio.h> \n"
                         " \n"
                         "int main(int argc, char **argv) { \n"
-                        "	printf(\"Hello, world!\n\"); \n"
+                        "	printf(\"Hello, world!\\n\"); \n"
                         "	return 0; \n"
                         "} \n");
     } else if (strcmp(extension, "cpp") == 0 ) {
@@ -139,17 +142,13 @@ void init_git(char *project){
 }
 
 int main(int argc, char **argv) {
-    if (argc < 2)
-        usage();
     int opt;
     char buffer[256];
     char project[80];
     char extension[8];
     char compiler[16];
-    strncpy(project, argv[1], 80);
-    strncpy(extension, "c", 8);
-    strcpy(compiler, "gcc");
-    while ((opt = getopt(argc, argv, ":hve:c:")) != -1) {
+
+    while ((opt = getopt(argc, argv, ":hv")) != -1) {
         switch (opt) {
         case 'h':
             usage();
@@ -157,11 +156,24 @@ int main(int argc, char **argv) {
         case 'v':
             die("yapm v%s \n", version);
             break;
-        case 'e':
-            strncpy(extension, optarg, 8);
-            break;
+        }
+    }
+    if (argc < 3)
+        usage();
+
+    strncpy(project, argv[1], 80);
+    strncpy(extension, argv[2], 8);
+    if (strcmp(extension, "c") == 0)
+        strcpy(compiler, "gcc");
+    else if (strcmp(extension, "cpp") == 0)
+        strcpy(compiler, "g++");
+    else if (strcmp(extension, "python") == 0)
+        strcpy(compiler, "python");
+
+    while ((opt = getopt(argc, argv, ":c:")) != -1) {
+        switch (opt) {
         case 'c':
-            strncpy(compiler, optarg, 16);
+            strcpy(compiler, optarg);
             break;
         default:
             die("unknown option: %s \n", opt);
