@@ -116,6 +116,8 @@ void create_main(char *project, char *extension){
                         "	std::cout << \"Hello, World!\" << std::endl; \n"
                         "	return 0; \n"
                         "} \n");
+    } else {
+        fprintf(stderr, "unknown");
     }
     fprintf(main, "%s", buffer);
     fclose(main);
@@ -171,6 +173,8 @@ int main(int argc, char **argv) {
             strcpy(compiler, "g++");
         } else if (strcmp(extension, "cpp") == 0) {
             strcpy(compiler, "g++");
+        } else {
+            die("unknown file extension: %s.", extension);
         }
     }
 
