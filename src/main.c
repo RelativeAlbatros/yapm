@@ -39,10 +39,9 @@ void debug(char *message){
 }
 
 void usage(void){
-    printf("USAGE: yapm <name> <file-extension> [-c compiler]\n"
+    printf("USAGE: yapm <name> <file-extension> [compiler]\n"
            "    -v      prints version \n"
-           "    -h      shows this helpful message \n"
-           "    -c      manually set a compiler \n");
+           "    -h      shows this helpful message \n");
     exit(1);
 }
 
@@ -117,8 +116,6 @@ void create_main(char *project, char *extension){
                         "	std::cout << \"Hello, World!\" << std::endl; \n"
                         "	return 0; \n"
                         "} \n");
-    } else if (strcmp(extension, "python") == 0) {
-        sprintf(buffer, " print(\"Hello, World!\") ");
     }
     fprintf(main, "%s", buffer);
     fclose(main);
@@ -163,24 +160,17 @@ int main(int argc, char **argv) {
 
     strncpy(project, argv[1], 80);
     strncpy(extension, argv[2], 8);
-    if (strcmp(extension, "c") == 0)
-        strcpy(compiler, "gcc");
-    else if (strcmp(extension, "c++") == 0) {
-        strcpy(extension, "cpp");
-        strcpy(compiler, "g++");
-    }
-    else if (strcmp(extension, "cpp") == 0)
-        strcpy(compiler, "g++");
-    else if (strcmp(extension, "python") == 0)
-        strcpy(compiler, "python");
-
-    while ((opt = getopt(argc, argv, ":c:")) != -1) {
-        switch (opt) {
-        case 'c':
-            strcpy(compiler, optarg);
-            break;
-        default:
-            die("unknown option: %s \n", opt);
+    if (argc > 3) {
+        strncpy(compiler , argv[3], 8);
+    } else {
+        // set default gnu compilers
+        if (strcmp(extension, "c") == 0) {
+            strcpy(compiler, "gcc");
+        } else if (strcmp(extension, "c++") == 0) {
+            strcpy(extension, "cpp");
+            strcpy(compiler, "g++");
+        } else if (strcmp(extension, "cpp") == 0) {
+            strcpy(compiler, "g++");
         }
     }
 
